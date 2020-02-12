@@ -1322,7 +1322,7 @@ func (scope *Scope) autoIndex() *Scope {
 }
 
 func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (results [][]interface{}) {
-	resultMap := make(map[string][]interface{})
+	resultMap := make(map[string]bool)
 	for _, value := range values {
 		indirectValue := indirect(reflect.ValueOf(value))
 
@@ -1343,7 +1343,8 @@ func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (r
 				if hasValue {
 					h := fmt.Sprint(result...)
 					if _, exist := resultMap[h]; !exist {
-						resultMap[h] = result
+						resultMap[h] = true
+						results = append(results, result)
 					}
 				}
 			}
@@ -1361,13 +1362,11 @@ func (scope *Scope) getColumnAsArray(columns []string, values ...interface{}) (r
 			if hasValue {
 				h := fmt.Sprint(result...)
 				if _, exist := resultMap[h]; !exist {
-					resultMap[h] = result
+					resultMap[h] = true
+					results = append(results, result)
 				}
 			}
 		}
-	}
-	for _, v := range resultMap {
-		results = append(results, v)
 	}
 	return
 }
